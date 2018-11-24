@@ -1,7 +1,12 @@
-import requests
-import json
+# -*- coding:utf-8 -*-
+__author__ = 'fansly'
 
-TULING_KEY = os.getenv(TULING_KEY)
+import os
+import json
+import requests
+
+TULING_KEY = os.getenv('TULING_KEY')
+
 
 def get_response(openid, msg):
     api = 'http://openapi.tuling123.com/openapi/api/v2'
