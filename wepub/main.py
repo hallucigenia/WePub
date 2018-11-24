@@ -3,10 +3,14 @@ __author__ = 'fansly'
 
 import hashlib
 import time
-import posts
+import lxml
+from lxml import etree
+from reply import TextReply
 
 from flask import Flask, request, make_response
-import xml.etree.ElementTree as ET
+
+
+WX_TOKEN='fancy'
 
 app = Flask(__name__)
 app.debug = True
@@ -14,12 +18,12 @@ app.debug = True
 
 @app.route("/")
 def hello():
-    return "hello world!"
+    return "Hello World!"
 
 @app.route('/wechat_api/', methods = ['GET', 'POST'] )
 def wechat():
     if request.method == 'GET':
-        token = 'fancy'
+        token = WX_TOKEN
         # your token in here
         data = request.args
         signature = data.get('signature','')
@@ -36,17 +40,26 @@ def wechat():
             response.headers['content-type'] = 'text'
             return response
 
-    if request.method == 'POST':
-        xmldata = request.args
-        xml_rec = et.fromstring(xmldata)
+    else:
+        xml_data=request.data
+        wx_xml=etree.fromstring(xml_data)
+		# print(etree.tostring(wx_xml,pretty_print=True))
+        wx_msgType=wx_xml.find('MsgType').text
+        wx_fromUser=wx_xml.find('FromUserName').text
+        wx_toUser=wx_xml.find('ToUserName').text
 
-        ToUser = xml_rec.find('ToUserName').text
-        FromUser = xml_rec.find('FromUserName').text
-        MsgType = xml_rec.find('MsgType').text
-        Content = xml_rec.find('Content').text
-        MsgId = xml_rec.find('MsgId').text
+        if wx_msgType == 'text':
+            wx_content=wx_xml.find('Content').text
+            content=wx_content.encode('utf-8')
+            print(content)
+            if content == '天气':
+                return TextReply(wx_fromUser,wx_toUser,u'北京天气挺好的！').render()
+            else:
+                return TextReply(wx_fromUser,wx_toUser,wx_content).render()
+        elif wx_msgType == 'image':
+            return 'success'
+        else:
+            return 'success'
 
-        return post.reply_post(MsgType) % (FromUser, ToUser, int(time()), Content)
-
-if __name__ == '__main__':
-    app.run()
+    if __name__ == '__main__':
+        app.run()
