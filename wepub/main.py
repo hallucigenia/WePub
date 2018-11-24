@@ -36,9 +36,8 @@ def wechat():
         s = ''.join(s)
         if hashlib.sha1(s.encode('utf-8')).hexdigest() == signature:
             # 对接受的请求转换为utf-8后进行sha1加密
-            response = make_response(echostr)
             response.headers['content-type'] = 'text'
-            return response
+            return make_response(echostr)
 
     else:
         xml_data=request.data
@@ -53,7 +52,7 @@ def wechat():
             content=wx_content.encode('utf-8')
             print(content)
             if content == '天气':
-                return TextReply(wx_fromUser,wx_toUser,u'北京天气挺好的！').render()
+                return TextReply(wx_fromUser,wx_toUser,'北京天气挺好的！').render()
             else:
                 return TextReply(wx_fromUser,wx_toUser,wx_content).render()
         elif wx_msgType == 'image':
