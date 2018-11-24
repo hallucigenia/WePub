@@ -1,14 +1,15 @@
 # -*- coding:utf8 -*-
 __author__ = 'fansly'
 
-import hashlib
+import re
+import json
 import time
-import lxml
-from lxml import etree
-from reply import TextReply
+import hashlib
+import requests
 
 from flask import Flask, request, make_response
 
+import xml.etree.ElementTree as ET
 
 WX_TOKEN='fancy'
 
@@ -40,25 +41,37 @@ def wechat():
             return make_response(echostr)
 
     else:
-        xml_data=request.data
-        wx_xml=etree.fromstring(xml_data)
-		# print(etree.tostring(wx_xml,pretty_print=True))
-        wx_msgType=wx_xml.find('MsgType').text
-        wx_fromUser=wx_xml.find('FromUserName').text
-        wx_toUser=wx_xml.find('ToUserName').text
+        xml = ET.fromstring(request.data)
+        toUser = xml.find('ToUserName').text
+        fromUser = xml.find('FromUserName').text
+        msgType = xml.find("MsgType").text
+        createTime = xml.find("CreateTime")
 
-        if wx_msgType == 'text':
-            wx_content=wx_xml.find('Content').text
-            content=wx_content.encode('utf-8')
-            print(content)
-            if content == '天气':
-                return TextReply(wx_fromUser,wx_toUser,'北京天气挺好的！').render()
-            else:
-                return TextReply(wx_fromUser,wx_toUser,wx_content).render()
-        elif wx_msgType == 'image':
-            return 'success'
+        if msgType == 'text':
+            content=xml.find('Content').text
+            content=content.encode('utf-8')
+            return reply_text(fromUser, toUser, reply(fromUser, content))
         else:
-            return 'success'
+            return reply_text(fromUser, toUser, "嗯？我听不太懂")
 
-    if __name__ == '__main__':
-        app.run()
+
+def reply_text(to_user, from_user, content):
+    return """
+    <xml>
+        <ToUserName><![CDATA[{}]]></ToUserName>
+        <FromUserName><![CDATA[{}]]></FromUserName>
+        <CreateTime>{}</CreateTime>
+        <MsgType><![CDATA]></MsgType>
+        <Content><![CDATA[{}]]></Content>
+    </xml>
+    """.format(to_user, from_user, int(time.time() * 1000), content)
+
+
+def reply(openid, msg):
+    data = {"key": "81dd4902254b4714a8acaa2685da1afd", "info": msg, "userid": openid}
+    r = requests.post('http://openapi.tuling123.com/openapi/api', data)
+    text = json.loads(r.text)
+    return text['text'].encode('utf-8')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5050)
