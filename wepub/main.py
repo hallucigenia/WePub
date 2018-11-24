@@ -6,7 +6,7 @@ import time
 import posts
 
 from flask import Flask, request, make_response
-import xml.etree.ElementTree as et
+import xml.etree.ElementTree as ET
 
 app = Flask(__name__)
 app.debug = True
@@ -46,7 +46,7 @@ def wechat():
         Content = xml_rec.find('Content').text
         MsgId = xml_rec.find('MsgId').text
 
-        return post.reply_post(MsgType) % (fromUser, ToUser, int(time()), Content)
+        return post.reply_post(MsgType) % (FromUser, ToUser, int(time()), Content)
 
 if __name__ == '__main__':
     app.run()
