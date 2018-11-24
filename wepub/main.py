@@ -56,16 +56,11 @@ def wechat():
 
 
 def reply_text(to_user, from_user, content):
-    return """
-    <xml>
-        <ToUserName><![CDATA[{}]]></ToUserName>
-        <FromUserName><![CDATA[{}]]></FromUserName>
-        <CreateTime>{}</CreateTime>
-        <MsgType><![CDATA]></MsgType>
-        <Content><![CDATA[{}]]></Content>
-    </xml>
-    """.format(to_user, from_user, int(time.time() * 1000), content)
-
+    reply = "<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[%s]]></Content><FuncFlag>0</FuncFlag></xml>"
+        response = make_response(reply % (to_user, from_user,
+                                          str(int(time.time())), content))
+        response.content_type = 'application/xml'
+        return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
