@@ -1,6 +1,8 @@
 import requests
 import json
 
+TULING_KEY = os.getenv(TULING_KEY)
+
 def get_response(openid, msg):
     api = 'http://openapi.tuling123.com/openapi/api/v2'
     dat = {
@@ -20,7 +22,7 @@ def get_response(openid, msg):
             }
         },
         "userInfo": {
-            "apiKey": '81dd4902254b4714a8acaa2685da1afd',
+            "apiKey": TULING_KEY,
             "userId": openid
         }
     }
