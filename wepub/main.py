@@ -37,7 +37,7 @@ def wechat():
         s = ''.join(s)
         if hashlib.sha1(s.encode('utf-8')).hexdigest() == signature:
             # 对接受的请求转换为utf-8后进行sha1加密
-            response = make_response(schostr)
+            response = make_response(echostr)
             response.headers['content-type'] = 'text'
             return response
 
