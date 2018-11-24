@@ -5,7 +5,7 @@ import time
 import posts
 
 from flask import Flask, request, make_response
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as et
 
 app = Flask(__name__)
 app.debug = True
