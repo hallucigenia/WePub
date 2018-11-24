@@ -47,5 +47,5 @@ def wechat():
 
         return post.reply_post(MsgType) % (fromUser, ToUser, int(time()), Content)
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     app.run()
