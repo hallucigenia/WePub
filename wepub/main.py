@@ -8,7 +8,7 @@ import hashlib
 import requests
 
 from flask import Flask, request, make_response
-
+from tuling import get_response
 import xml.etree.ElementTree as ET
 
 WX_TOKEN='fancy'
@@ -49,8 +49,7 @@ def wechat():
 
         if msgType == 'text':
             content=xml.find('Content').text
-            content=content.encode('utf-8')
-            return reply_text(fromUser, toUser, reply(fromUser, content))
+            return reply_text(fromUser, toUser, get_response(fromUser, content))
         else:
             return reply_text(fromUser, toUser, "嗯？我听不太懂")
 
@@ -66,12 +65,6 @@ def reply_text(to_user, from_user, content):
     </xml>
     """.format(to_user, from_user, int(time.time() * 1000), content)
 
-
-def reply(openid, msg):
-    data = {"key": "81dd4902254b4714a8acaa2685da1afd", "info": msg, "userid": openid}
-    r = requests.post('http://openapi.tuling123.com/openapi/api', data)
-    text = json.loads(r.text)
-    return text['text'].encode('utf-8')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
