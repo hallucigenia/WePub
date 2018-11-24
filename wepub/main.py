@@ -1,4 +1,5 @@
 # -*- coding:utf8 -*-
+__author__ = 'fansly'
 
 import hashlib
 import time

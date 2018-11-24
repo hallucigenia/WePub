@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 text_str = '''<xml>
                 <ToUserName>![CDATA[%s]]</ToUserName>
                 <FromUserName>![CDATA[%s]]</FromUserName>
