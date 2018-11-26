@@ -5,8 +5,14 @@ name = "pypi"
 
 [packages]
 flask = "*"
+gunicorn = "*"
+lxml = "*"
+requests = "*"
+python-dotenv = "*"
 
 [dev-packages]
+"flake8" = "*"
+"autopep8" = "*"
 
 [requires]
 python_version = "3.7"
