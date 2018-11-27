@@ -9,6 +9,7 @@ gunicorn = "*"
 lxml = "*"
 requests = "*"
 python-dotenv = "*"
+flask-pymongo = "*"
 
 [dev-packages]
 "flake8" = "*"
